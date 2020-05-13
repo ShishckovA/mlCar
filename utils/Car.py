@@ -1,5 +1,5 @@
-import geometry
-from AI import *
+from utils import geometry
+from utils.AI import *
 from pygame.draw import polygon, circle
 
 

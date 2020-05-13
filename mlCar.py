@@ -1,10 +1,7 @@
 import random
 
 import pygame
-from pygame.math import Vector2
-import geometry
-from params import *
-from Car import *
+from utils.Car import *
 
 
 def draw_field(srf):
@@ -34,13 +31,13 @@ def handle_events():
         #
         #         print(spos[0] / k, spos[1] / k, epos[0] / k, epos[1] / k)
         #         field.append(Segment(spos[0], spos[1], epos[0], epos[1]))
-
-            if event.type == pygame.KEYDOWN:
-                if event.key == 273:
-                    EPOCHE_LEN += 100
-                if event.key == 274:
-                    EPOCHE_LEN -= 100
-                pygame.display.set_caption("Epoche len: " + str(EPOCHE_LEN))
+        #
+        #     if event.type == pygame.KEYDOWN:
+        #         if event.key == 273:
+        #             EPOCHE_LEN += 100
+        #         if event.key == 274:
+        #             EPOCHE_LEN -= 100
+        #         pygame.display.set_caption("Epoche len: " + str(EPOCHE_LEN))
 
 
 def update_pos():
@@ -98,13 +95,13 @@ clock = pygame.time.Clock()
 pygame.display.update()
 
 field = []
-with open("field.txt", "r") as f:
+with open("data/field.txt", "r") as f:
     for line in f.readlines():
         p1, p2, p3, p4 = map(int, line.split())
         field.append(Segment(p1 * k, p2 * k, p3 * k, p4 * k))
 
 checkpoints = []
-with open("checkpoints.txt", "r") as f:
+with open("data/checkpoints.txt", "r") as f:
     for line in f.readlines():
         p1, p2, p3, p4 = map(int, line.split())
         checkpoints.append(Segment(p1 * k, p2 * k, p3 * k, p4 * k))
@@ -115,7 +112,7 @@ field.append(Segment(WIDTH, HEIGHT, WIDTH, 0))
 field.append(Segment(WIDTH, 0, 0, 0))
 # cars = [Car("Car") for _ in range(N_CARS)]
 car = Car("car")
-car.ai.read("data.txt")
+car.ai.read("data/net_koef.txt")
 cars = [car]
 mode = 'presentation'
 # mode = 'learning'
@@ -138,7 +135,7 @@ while True:
     epoche(cars)
     if mode == 'leaening':
         cars.sort(key=lambda x: -x.score)
-        cars[0].ai.write("data.txt")
+        cars[0].ai.write("data/net_koef.txt")
         print("Best score with EPOCHE_LEN = {}:".format(EPOCHE_LEN), cars[0].score)
         new_cars = []
         for i in range(min(4, len(cars))):

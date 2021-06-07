@@ -84,10 +84,10 @@ class Car:
                 return True
         return False
 
-    def read_sensors(self, field):
+    def read_sensors(self, field, screen=None):
         ind = 0
         sensors = np.empty(N_SENSORS)
-        for deg in np.linspace(0, 2 * PI, N_SENSORS, endpoint=False):
+        for deg in np.linspace(-PI / 2, PI / 2, N_SENSORS, endpoint=False):
             vector = NORM_VECTOR.rotate(self.dir).rotate(deg)
             vector.scale_to_length(VIEW_DISTANCE)
             endpoint = self.pos + vector

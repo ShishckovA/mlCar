@@ -22,7 +22,7 @@ PI = 180
 N_CARS = 15
 START = (577 * k, 325 * k)
 
-N_SENSORS = 15
+N_SENSORS = 7
 
 
 class Segment:

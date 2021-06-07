@@ -22,34 +22,22 @@ def handle_events():
             pygame.quit()
             exit(0)
 
-        # if mode == 'learning':
-        #     if event.type == pygame.MOUSEBUTTONDOWN:
-        #         spos = event.pos
-        #
-        #     if event.type == pygame.MOUSEBUTTONUP:
-        #         epos = event.pos
-        #
-        #         print(spos[0] / k, spos[1] / k, epos[0] / k, epos[1] / k)
-        #         field.append(Segment(spos[0], spos[1], epos[0], epos[1]))
-        #
-        #     if event.type == pygame.KEYDOWN:
-        #         if event.key == 273:
-        #             EPOCHE_LEN += 100
-        #         if event.key == 274:
-        #             EPOCHE_LEN -= 100
-        #         pygame.display.set_caption("Epoche len: " + str(EPOCHE_LEN))
+        if mode == 'learning':
+            # if event.type == pygame.MOUSEBUTTONDOWN:
+            #     spos = event.pos
+            #
+            # if event.type == pygame.MOUSEBUTTONUP:
+            #     epos = event.pos
+            #
+            #     print(spos[0] / k, spos[1] / k, epos[0] / k, epos[1] / k)
+            #     field.append(Segment(spos[0], spos[1], epos[0], epos[1]))
 
-
-def update_pos():
-    global pressed
-    if 273 in pressed:
-        car.forward(100)
-    if 274 in pressed:
-        car.forward(-100)
-    if 275 in pressed:
-        car.turn(100)
-    if 276 in pressed:
-        car.turn(-100)
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_UP:
+                    EPOCHE_LEN += 100
+                if event.key == pygame.K_DOWN:
+                    EPOCHE_LEN -= 100
+                pygame.display.set_caption("Epoche len: " + str(EPOCHE_LEN))
 
 
 def epoche(cars):
@@ -57,7 +45,7 @@ def epoche(cars):
         car.score = 0
     dead = False
     i = 0
-    while i != EPOCHE_LEN:
+    while i < EPOCHE_LEN:
         if dead:
             break
 
@@ -82,8 +70,8 @@ def epoche(cars):
 
         handle_events()
         pygame.display.update()
-
-        clock.tick(FPS)
+        if mode == "presentation":
+            clock.tick(FPS)
         i += 1
 
 
@@ -110,12 +98,12 @@ field.append(Segment(0, 0, 0, HEIGHT))
 field.append(Segment(0, HEIGHT, WIDTH, HEIGHT))
 field.append(Segment(WIDTH, HEIGHT, WIDTH, 0))
 field.append(Segment(WIDTH, 0, 0, 0))
-# cars = [Car("Car") for _ in range(N_CARS)]
-car = Car("car")
-car.ai.read("data/net_koef.txt")
-cars = [car]
-mode = 'presentation'
-# mode = 'learning'
+cars = [Car("Car") for _ in range(N_CARS)]
+# car = Car("car")
+# car.ai.read("data/net_koef.txt")
+# cars = [car]
+# mode = 'presentation'
+mode = 'learning'
 
 if mode == 'presentation':
     EPOCHE_LEN = -1
@@ -123,7 +111,7 @@ if mode == 'presentation':
     SHOW_TIRES_TRACE = True
     pygame.display.set_caption("Cars with AI")
 elif mode == 'learning':
-    EPOCHE_LEN = 15000
+    EPOCHE_LEN = 300
     DRAW_CHECKPOINTS = True
     pygame.display.set_caption("Epoche len: " + str(EPOCHE_LEN))
     SHOW_TIRES_TRACE = False
@@ -133,7 +121,7 @@ else:
 
 while True:
     epoche(cars)
-    if mode == 'leaening':
+    if mode == 'learning':
         cars.sort(key=lambda x: -x.score)
         cars[0].ai.write("data/net_koef.txt")
         print("Best score with EPOCHE_LEN = {}:".format(EPOCHE_LEN), cars[0].score)
